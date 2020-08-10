@@ -1,9 +1,7 @@
 ---
 title: “Jon Simmons story"
-image: "/assets/images/life-as-a-teacher-header.jpg"
-backlink: "../../"
+image: /assets/images/life-as-a-teacher-header.jpg
 ---
-
 <div class="content-wrapper">
     <div class="content__right">
     </div>
@@ -16,7 +14,7 @@ backlink: "../../"
             <div class="story-header">
                 <div class="story-header__thumb" style="background-image:url('/assets/images/stories/stories-jon.jpg')"></div>
                 <div class="story-header__label">
-                    <h2>Jon Simmons, <br/>Head of department</h2>
+                    <h2>Jon Simmons, <br/>Head of department.</h2>
                 </div>
             </div>
             <p class="prominent">
