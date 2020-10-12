@@ -27,10 +27,7 @@ navigation: 10
   <h2 id="bursaries-and-scholarships">Bursaries and scholarships</h2>
   <p>Bursaries and scholarships are tax-free amounts of money to train in certain subjects. You don’t need to pay them back.</p>
 
-  <p>You’ll need a first, 2:1, 2:2 degree or a PhD or Master's to be eligible for a bursary.</p>
-  <p>For a scholarship you'll need a first or 2:1 degree or a PhD or Master's.</p>
-
-  <p>You could get a bursary of up to £26,000 or apply for a scholarship of up to £28,000.</p>
+  <p>The funding available for teacher training courses starting in academic year 2021/22 will be announced soon - please sign up for our <a href="https://beta-getintoteaching.education.gov.uk/mailinglist/signup">mailing list</a> to be kept up-to-date.</p>
 
   <p><a href="/finance-guidance#bursaries-and-scholarships" target="_blank" rel="noopener noreferrer">Find out more about bursaries and scholarships<span class="govuk-visually-hidden">(Link opens in new
 window)</span><i class="icon icon-external"></i></a>.</p>
