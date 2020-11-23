@@ -111,7 +111,7 @@ jobs:
         run: |-
           docker run -t --rm -e RAILS_ENV=test \
             ${{env.DOCKERHUB_REPOSITORY}}:sha-${{ steps.sha.outputs.short }} \
-            rspec --format documentation spec/features/content_pages_spec.rb
+            rspec --format documentation --tag content
 
       - uses: hashicorp/setup-terraform@v1.2.1
         with:
