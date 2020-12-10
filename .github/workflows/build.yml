@@ -181,8 +181,8 @@ jobs:
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     outputs:
-      release_tag: ${{steps.tag_version.outputs.tag}}
-      release_sha: ${{steps.tag_version.outputs.sha}}
+      release_tag: ${{steps.tag_version.outputs.pr_number}}
+      release_sha: ${{github.sha }}
     steps:
        - name: Trigger Development Deployment
          uses: benc-uk/workflow-dispatch@v1.1
@@ -216,9 +216,9 @@ jobs:
          env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
          with:
-            tag_name: ${{ steps.tag_version.outputs.tag }}
-            release_name: Release ${{ steps.tag_version.outputs.tag }}
-            body: ${{ steps.tag_version.outputs.changelog }}
+            tag_name: ${{ steps.tag_version.outputs.pr_number }}
+            release_name: Release ${{ steps.tag_version.outputs.pr_number }}
+            body: ${{ steps.tag_version.outputs.pr_text }}
             commitish: ${{ github.sha}}
             prerelease: false
             draft:      false
