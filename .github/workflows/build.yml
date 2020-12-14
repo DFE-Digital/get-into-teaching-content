@@ -311,6 +311,26 @@ jobs:
            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
          with:
            release_id: ${{steps.tag_id.outputs.release_id}}
+ 
+       - name: Trigger Deployment to Production
+         uses: benc-uk/workflow-dispatch@v1.1
+         with:
+           workflow: Deploy to PaaS
+           token: ${{ secrets.ACTIONS_API_ACCESS_TOKEN }}
+           inputs: '{"environment": "Production", "sha": "${{ github.sha }}" }'
+           ref: "${{github.ref}}" 
+
+       - name: Wait for Deployment to Production
+         uses: fountainhead/action-wait-for-check@v1.0.0
+         id: wait-for-deploy
+         with:
+           token: ${{ secrets.ACTIONS_API_ACCESS_TOKEN}}
+           checkName: Deploy Production
+           ref: "${{github.ref}}" 
+
+       - name: Check if Production Deployment has returned with a failure
+         if: steps.wait-for-deploy.outputs.conclusion == 'failure'
+         run: exit 1
 
        - name: Slack Notification
          if: failure()
