@@ -2,6 +2,21 @@
 title: "International teachers and trainees"
 image: "/assets/images/international-dt.jpg"
 backlink: "../../"
+right_column:
+  ctas:
+    - title: Online events
+      text: |
+        Come to an online event where you can ask advice from our panel of
+        teaching experts about coming to teach in England.
+      link_text: "Sign up"
+      link_target: "/events/advice-for-international-applicants-3"
+      icon: "icon-calendar"
+    - title: Get support
+      text: |
+        Our expert advisers can offer you one-to-one support.
+      link_text: "Get an adviser today"
+      link_target: "/tta-service"
+      icon: "icon-person"
 ---
 
 ## Teaching or training to teach in England
