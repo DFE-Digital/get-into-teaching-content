@@ -1,0 +1,1 @@
+Teaching will give you the chance to use your skills to inspire young people and make sure every pupil gets the same access to a quality education.  It’s a career that offers varied opportunities, where no day is ever the same.
