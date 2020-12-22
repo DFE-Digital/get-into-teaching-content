@@ -1,14 +1,7 @@
-name: Destroy Review Instance 
+name: Destroy Review Instance
 on:
   pull_request:
     types: [closed]
-
-env:
-  DOCKERHUB_REPOSITORY: dfedigital/get-into-teaching-frontend
-  DOMAIN: london.cloudapps.digital
-  APPLICATION: Get Into Teaching Application
-  REVIEW_APPLICATION: review-get-into-teaching-app
-  PAAS_APPLICATION_NAME:   get-into-teaching-app
 
 jobs:
   destroy:
@@ -19,12 +12,15 @@ jobs:
       run:
         shell: bash
     steps:
-       - name: Checkout
-         uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
-       - name: Setup Environment Variables
-         id:  variables
-         run: |
+      - name: set-up-environment
+        uses: DFE-Digital/github-actions/set-up-environment@master
+
+      - name: Setup Environment Variables
+        id: variables
+        run: |
                  echo ::set-output name=ARM_ACCESS_KEY::$(echo "${{ secrets.DEV_ARM_ACCESS_KEY  }}" )
                  echo ::set-output name=pr_name::${{env.REVIEW_APPLICATION}}-${{github.event.number}}
                  echo ::set-output name=url::"https://${{env.REVIEW_APPLICATION}}-${{github.event.number}}.${{env.DOMAIN}}"
@@ -35,42 +31,39 @@ jobs:
                  echo ::set-output name=control::$(echo "dev" )
                  echo ::set-output name=healthcheck::"${{env.REVIEW_APPLICATION}}-${{github.event.inputs.pr}}"
 
-       - uses: hashicorp/setup-terraform@v1.3.2
-         with:
-              terraform_version: 0.13.4
+      - uses: hashicorp/setup-terraform@v1.3.2
+        with:
+          terraform_version: 0.13.4
 
-       - name: Wait for any previous runs to complete
-         uses: softprops/turnstyle@v1
-         env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-         with:
-           continue-after-seconds: 180
+      - name: Wait for any previous runs to complete
+        uses: softprops/turnstyle@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          continue-after-seconds: 180
 
-       - name: Terraform Destroy
-         run: |
-             cd terraform/paas && pwd
-             terraform init -backend-config=review.bk.vars -backend-config="key=${{steps.variables.outputs.pr_name}}.tfstate"
-             terraform destroy -var-file=review.env.tfvars -auto-approve
-         env:
-             ARM_ACCESS_KEY:             ${{ steps.variables.outputs.ARM_ACCESS_KEY  }}
-             TF_VAR_user:                ${{ secrets.GOVUKPAAS_USERNAME  }}
-             TF_VAR_password:            ${{ secrets.GOVUKPAAS_PASSWORD  }}
-             TF_VAR_RAILS_ENV:           ${{ steps.variables.outputs.RAILS_ENV  }}
-             TF_VAR_RAILS_MASTER_KEY:    ${{ steps.variables.outputs.RAILS_MASTER_KEY  }}
-             TF_VAR_HTTPAUTH_PASSWORD:   ${{ steps.variables.outputs.HTTP_PASSWORD  }}
-             TF_VAR_HTTPAUTH_USERNAME:   ${{ steps.variables.outputs.HTTP_USERNAME  }}
-             TF_VAR_docker_username:     ${{ secrets.DOCKERHUB_USERNAME }}
-             TF_VAR_docker_password:     ${{ secrets.DOCKERHUB_PERSONAL_ACCESS_TOKEN }}
-             TF_VAR_paas_app_route_name: DUMMY
+      - name: Terraform Destroy
+        run: |
+            cd terraform/paas && pwd
+            terraform init -backend-config=review.bk.vars -backend-config="key=${{steps.variables.outputs.pr_name}}.tfstate"
+            terraform destroy -var-file=review.env.tfvars -auto-approve
+        env:
+          ARM_ACCESS_KEY: ${{ steps.variables.outputs.ARM_ACCESS_KEY  }}
+          TF_VAR_user: ${{ secrets.GOVUKPAAS_USERNAME  }}
+          TF_VAR_password: ${{ secrets.GOVUKPAAS_PASSWORD  }}
+          TF_VAR_RAILS_ENV: ${{ steps.variables.outputs.RAILS_ENV  }}
+          TF_VAR_RAILS_MASTER_KEY: ${{ steps.variables.outputs.RAILS_MASTER_KEY  }}
+          TF_VAR_HTTPAUTH_PASSWORD: ${{ steps.variables.outputs.HTTP_PASSWORD  }}
+          TF_VAR_HTTPAUTH_USERNAME: ${{ steps.variables.outputs.HTTP_USERNAME  }}
+          TF_VAR_docker_username: ${{ secrets.DOCKERHUB_USERNAME }}
+          TF_VAR_docker_password: ${{ secrets.DOCKERHUB_PERSONAL_ACCESS_TOKEN }}
+          TF_VAR_paas_app_route_name: DUMMY
 
-       - name: Slack Notification
-         if: failure()
-         uses: rtCamp/action-slack-notify@master
-         env:
-           SLACK_CHANNEL: getintoteaching_tech
-           SLACK_COLOR: '#B90E0A'
-           SLACK_ICON: https://github.com/rtCamp.png?size=48
-           SLACK_TITLE: Failure Closing Review
-           SLACK_MESSAGE: Failure closing ${{env.APPLICATION}} review
-           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-           SLACK_FOOTER: ${{env.APPLICATION}}
+      - name: Slack Notification
+        if: failure()
+        uses: rtCamp/action-slack-notify@master
+        env:
+          SLACK_COLOR: ${{env.SLACK_FAILURE}}
+          SLACK_TITLE: Failure Closing Review
+          SLACK_MESSAGE: Failure closing ${{env.APPLICATION}} review
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}

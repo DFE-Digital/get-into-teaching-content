@@ -6,13 +6,6 @@ on:
         description: Image Name to be Tested
         required: true
 
-env:
-  DOCKERHUB_REPOSITORY: dfedigital/get-into-teaching-frontend
-  DOMAIN: london.cloudapps.digital
-  APPLICATION: Get Into Teaching Application
-  REVIEW_APPLICATION: review-get-into-teaching-app
-  PAAS_APPLICATION_NAME:   get-into-teaching-app
-
 jobs:
   cve:
     name: CVE Test
@@ -21,14 +14,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: set-up-environment
+        uses: DFE-Digital/github-actions/set-up-environment@master
+
       - name: Scan image
         uses: anchore/scan-action@v2
         with:
-             image: ${{github.event.inputs.image}}
-             fail-build: false
-             severity-cutoff: high
-             acs-report-enable: true
-           
+          image: ${{github.event.inputs.image}}
+          fail-build: false
+          severity-cutoff: high
+          acs-report-enable: true
+
       - name: upload Anchore scan SARIF report
         if: always()
         uses: github/codeql-action/upload-sarif@v1
@@ -39,10 +35,7 @@ jobs:
         if: failure()
         uses: rtCamp/action-slack-notify@master
         env:
-           SLACK_CHANNEL: getintoteaching_tech
-           SLACK_COLOR: '#3278BD'
-           SLACK_ICON: https://github.com/rtCamp.png?size=48
-           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-           SLACK_MESSAGE: Pipeline Failure carrying out CVE Testing on ${{ github.event.inputs.image }}
-           SLACK_TITLE: CVE Testing has failed
-           SLACK_FOOTER: ${{env.APPLICATION}}
+          SLACK_COLOR: ${{env.SLACK_FAILURE}}
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_MESSAGE: Pipeline Failure carrying out CVE Testing on ${{ github.event.inputs.image }}
+          SLACK_TITLE: CVE Testing has failed

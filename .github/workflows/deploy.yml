@@ -16,23 +16,17 @@ on:
         required: false
         default: Teacher Training Adviser
 
-env:
-  DOCKERHUB_REPOSITORY:    dfedigital/get-into-teaching-frontend
-  DOMAIN:                  london.cloudapps.digital
-  APPLICATION:             Get Into Teaching Application
-  REVIEW_APPLICATION:      review-get-into-teaching-app
-  PAAS_APPLICATION_NAME:   get-into-teaching-app
 jobs:
   turnstyle:
     name: Wait for any previous deployments
     timeout-minutes: 5
     runs-on: ubuntu-latest
     steps:
-       - name: Turnstyle
-         uses: softprops/turnstyle@v1
-         with:
-            continue-after-seconds: 300
-            same-branch-only: false
+      - name: Turnstyle
+        uses: softprops/turnstyle@v1
+        with:
+          continue-after-seconds: 300
+          same-branch-only: false
 
   deploy:
     name: Deploy ${{ github.event.inputs.environment }}
@@ -43,18 +37,19 @@ jobs:
       run:
         shell: bash
     steps:
-       - name: Checkout
-         uses: actions/checkout@v2
-         with:
-            ref: ${{ github.event.inputs.sha }}
+      - name: Checkout
+        uses: actions/checkout@v2
 
-       - name: Get Short SHA
-         id: sha
-         run: echo ::set-output name=short::$(echo "${{ github.event.inputs.sha }}" | cut -c -7)
+      - name: set-up-environment
+        uses: DFE-Digital/github-actions/set-up-environment@master
 
-       - name: Setup Environment Variables
-         id:  variables
-         run: |
+      - name: Get Short SHA
+        id: sha
+        run: echo ::set-output name=short::$(echo "${{ github.event.inputs.sha }}" | cut -c -7)
+
+      - name: Setup Environment Variables
+        id: variables
+        run: |
              if [ "${{github.event.inputs.environment }}" == "Review" ]
              then
                  echo ::set-output name=ARM_ACCESS_KEY::$(echo "${{ secrets.DEV_ARM_ACCESS_KEY  }}" )
@@ -111,56 +106,56 @@ jobs:
                  echo ::set-output name=docker_image::${{env.DOCKERHUB_REPOSITORY}}:sha-${{ steps.sha.outputs.short}}
              fi
 
-       - uses: hashicorp/setup-terraform@v1.3.2
-         with:
-              terraform_version: 0.13.4
+      - uses: hashicorp/setup-terraform@v1.3.2
+        with:
+          terraform_version: 0.13.4
 
-       - name: Wait for any previous runs to complete
-         uses: softprops/turnstyle@v1
-         env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-         with:
-           continue-after-seconds: 180
+      - name: Wait for any previous runs to complete
+        uses: softprops/turnstyle@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          continue-after-seconds: 180
 
-       - name: Start ${{ github.event.inputs.environment }} Deployment
-         uses: bobheadxi/deployments@v0.4.3
-         id: deployment
-         with:
-           step: start
-           token: ${{ secrets.GITHUB_TOKEN }}
-           env: ${{ github.event.inputs.environment }}
-           ref: ${{ github.event.inputs.sha }}
+      - name: Start ${{ github.event.inputs.environment }} Deployment
+        uses: bobheadxi/deployments@v0.4.3
+        id: deployment
+        with:
+          step: start
+          token: ${{ secrets.GITHUB_TOKEN }}
+          env: ${{ github.event.inputs.environment }}
+          ref: ${{ github.event.inputs.sha }}
 
-       - name: Terraform ( ${{github.event.inputs.environment}} ) 
-         run: |
-             cd terraform/paas && pwd
-             terraform init -backend-config=${{steps.variables.outputs.control}}.bk.vars -backend-config="key=${{steps.variables.outputs.key}}.tfstate"
-             terraform plan -var-file=${{steps.variables.outputs.control}}.env.tfvars -out plan
-             terraform apply -auto-approve plan
-         env:
-             ARM_ACCESS_KEY:               ${{ steps.variables.outputs.ARM_ACCESS_KEY  }}
-             TF_VAR_user:                  ${{ secrets.GOVUKPAAS_USERNAME  }}
-             TF_VAR_password:              ${{ secrets.GOVUKPAAS_PASSWORD  }}
-             TF_VAR_RAILS_ENV:             ${{ steps.variables.outputs.RAILS_ENV  }}
-             TF_VAR_paas_app_docker_image: ${{ steps.variables.outputs.docker_image}} 
-             TF_VAR_RAILS_MASTER_KEY:      ${{ steps.variables.outputs.RAILS_MASTER_KEY  }}
-             TF_VAR_HTTPAUTH_PASSWORD:     ${{ steps.variables.outputs.HTTP_PASSWORD  }}
-             TF_VAR_HTTPAUTH_USERNAME:     ${{ steps.variables.outputs.HTTP_USERNAME  }}
-             TF_VAR_docker_username:       ${{ secrets.DOCKERHUB_USERNAME }}
-             TF_VAR_docker_password:       ${{ secrets.DOCKERHUB_PERSONAL_ACCESS_TOKEN }}
+      - name: Terraform ( ${{github.event.inputs.environment}} )
+        run: |
+            cd terraform/paas && pwd
+            terraform init -backend-config=${{steps.variables.outputs.control}}.bk.vars -backend-config="key=${{steps.variables.outputs.key}}.tfstate"
+            terraform plan -var-file=${{steps.variables.outputs.control}}.env.tfvars -out plan
+            terraform apply -auto-approve plan
+        env:
+          ARM_ACCESS_KEY: ${{ steps.variables.outputs.ARM_ACCESS_KEY  }}
+          TF_VAR_user: ${{ secrets.GOVUKPAAS_USERNAME  }}
+          TF_VAR_password: ${{ secrets.GOVUKPAAS_PASSWORD  }}
+          TF_VAR_RAILS_ENV: ${{ steps.variables.outputs.RAILS_ENV  }}
+          TF_VAR_paas_app_docker_image: ${{ steps.variables.outputs.docker_image}}
+          TF_VAR_RAILS_MASTER_KEY: ${{ steps.variables.outputs.RAILS_MASTER_KEY  }}
+          TF_VAR_HTTPAUTH_PASSWORD: ${{ steps.variables.outputs.HTTP_PASSWORD  }}
+          TF_VAR_HTTPAUTH_USERNAME: ${{ steps.variables.outputs.HTTP_USERNAME  }}
+          TF_VAR_docker_username: ${{ secrets.DOCKERHUB_USERNAME }}
+          TF_VAR_docker_password: ${{ secrets.DOCKERHUB_PERSONAL_ACCESS_TOKEN }}
 
-       - name: Smoke tests
-         run: |
-             tests/confidence/healthcheck.sh  "${{steps.variables.outputs.healthcheck}}"  "${{ steps.sha.outputs.short }}"
-         env:
-             HTTPAUTH_PASSWORD: ${{ steps.variables.outputs.HTTP_PASSWORD }}
-             HTTPAUTH_USERNAME: ${{ steps.variables.outputs.HTTP_USERNAME }}
+      - name: Smoke tests
+        run: |
+            tests/confidence/healthcheck.sh  "${{steps.variables.outputs.healthcheck}}"  "${{ steps.sha.outputs.short }}"
+        env:
+          HTTPAUTH_PASSWORD: ${{ steps.variables.outputs.HTTP_PASSWORD }}
+          HTTPAUTH_USERNAME: ${{ steps.variables.outputs.HTTP_USERNAME }}
 
-       - name: Update ${{ github.event.inputs.environment }} status
-         if: always() 
-         uses: bobheadxi/deployments@v0.4.3
-         with:
-           step: finish
-           token: ${{ secrets.GITHUB_TOKEN }}
-           status: ${{ job.status }}
-           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+      - name: Update ${{ github.event.inputs.environment }} status
+        if: always()
+        uses: bobheadxi/deployments@v0.4.3
+        with:
+          step: finish
+          token: ${{ secrets.GITHUB_TOKEN }}
+          status: ${{ job.status }}
+          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
