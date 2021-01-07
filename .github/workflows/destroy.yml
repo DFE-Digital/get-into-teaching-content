@@ -61,6 +61,7 @@ jobs:
           TF_VAR_sc_username: DfEStatusCake
           TF_VAR_sc_api_key: ${{ secrets.STATUS_CAKE_API }}
 
+
       - name: Slack Notification
         if: failure()
         uses: rtCamp/action-slack-notify@master

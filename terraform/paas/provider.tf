@@ -1,4 +1,4 @@
-provider cloudfoundry {
+provider "cloudfoundry" {
   api_url  = var.api_url
   user     = var.user
   password = var.password
@@ -8,6 +8,7 @@ provider statuscake {
   username = var.sc_username
   apikey   = var.sc_api_key
 }
+
 
 terraform {
   required_version = ">= 0.13.4"

@@ -3,7 +3,7 @@ title: "Impact of COVID-19 on teacher training"
 image: false
 backlink: "../"
 alert: |-
-  This page was updated on 18 September 2020, and will continue to be updated as
+  This page was updated on 05 January 2021, and will continue to be updated as
   new guidance is issued. Please check back regularly.
 ---
 
@@ -25,7 +25,7 @@ Getting some classroom experience can help you decide whether teaching is right 
 
 You can search and sign up through our [Get school experience service](https://schoolexperience.education.gov.uk/).
 
-Can I get school experience from September?
+Can I get school experience?
 
 Some schools are offering the opportunity for ITT candidates to undertake school experience both in school and virtually.
 
@@ -43,7 +43,7 @@ Applicants should wait to be contacted by the providers for specific guidance.
 
 #### Are the planned Train To Teach events going ahead?
 
-Autumn events have now been confirmed, please check the [events page](/events) for more information.
+Spring events have now been confirmed, please check the [events page](/events) for more information.
 
 #### What if I’m an overseas applicant?
 

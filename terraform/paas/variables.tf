@@ -71,6 +71,7 @@ variable "HTTPAUTH_USERNAME" {}
 variable "RAILS_ENV" {}
 variable "RAILS_MASTER_KEY" {}
 
+
 variable "sc_username" {}
 variable "sc_api_key" {}
 variable "alerts" {
