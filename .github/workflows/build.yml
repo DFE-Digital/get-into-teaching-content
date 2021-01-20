@@ -224,6 +224,14 @@ jobs:
           token: ${{ secrets.ACTIONS_API_ACCESS_TOKEN }}
           inputs: '{"environment": "dev"}'
 
+      - name: Trigger Development Fix Network Policies
+        uses: benc-uk/workflow-dispatch@v1.1
+        with:
+         repo: DFE-Digital/get-into-teaching-api
+         workflow: Fix Network policies 
+         token: ${{ secrets.ACTIONS_API_ACCESS_TOKEN }}
+         inputs: '{"environment": "Development" }'
+           
       - name: Generate Tag from PR Number
         id: tag_version
         uses: DFE-Digital/github-actions/GenerateReleaseFromSHA@master
@@ -291,10 +299,9 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
-
+        
       - name: set-up-environment
         uses: DFE-Digital/github-actions/set-up-environment@master
-
 
       - name: Trigger Cypress Tests (DFE-Digital/get-into-teaching-frontend-tests )
         uses: benc-uk/workflow-dispatch@v1.1
@@ -365,6 +372,14 @@ jobs:
       - name: Check if Production Deployment has returned with a failure
         if: steps.wait-for-deploy.outputs.conclusion == 'failure'
         run: exit 1
+
+      - name: Trigger Production Fix Network Policies
+        uses: benc-uk/workflow-dispatch@v1.1
+        with:
+         repo: DFE-Digital/get-into-teaching-api
+         workflow: Fix Network policies 
+         token: ${{ secrets.ACTIONS_API_ACCESS_TOKEN }}
+         inputs: '{"environment": "Production" }'
 
       - name: Slack Release Notification
         if: steps.tag_id.outputs.release_id
