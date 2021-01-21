@@ -10,7 +10,7 @@ resource statuscake_test alert {
   confirmations = each.value.confirmations
   custom_header = each.value.custom_header
   status_codes  = each.value.status_codes
-  basic_user    = var.HTTPAUTH_USERNAME
-  basic_pass    = var.HTTPAUTH_PASSWORD
+  basic_user    = local.application_secrets["HTTPAUTH_USERNAME"]
+  basic_pass    = local.application_secrets["HTTPAUTH_PASSWORD"]
   test_tags     = ["GIT", "BETA"]
 }
