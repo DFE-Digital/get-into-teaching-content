@@ -13,6 +13,9 @@ on:
 jobs:
   manual:
     name: Deploy to ${{github.event.inputs.environment}}
+    environment:
+       name: ${{github.event.inputs.environment}}
+
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -24,12 +27,22 @@ jobs:
       - name: set-up-environment
         uses: DFE-Digital/github-actions/set-up-environment@master
 
+      - uses: Azure/login@v1
+        with:
+            creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - uses: Azure/get-keyvault-secrets@v1
+        id:   azSecret
+        with:
+           keyvault: ${{ secrets.KEY_VAULT}}
+           secrets: 'COMMON-KEYS'
+
       - name: Get Release Id from Tag
         id: tag_id
         uses: DFE-Digital/github-actions/DraftReleaseByTag@master
         with:
           TAG: ${{ github.event.inputs.tag }}
-          TOKEN: ${{secrets.ACTIONS_API_ACCESS_TOKEN}}
+          TOKEN: ${{ fromJson( steps.azSecret.outputs.COMMON-KEYS).ACTIONS_API_ACCESS_TOKEN }}
 
       - name: Check if found
         if: steps.tag_id.outputs.found == 0
@@ -41,7 +54,7 @@ jobs:
         uses: benc-uk/workflow-dispatch@v1.1
         with:
           workflow: Deploy to PaaS
-          token: ${{ secrets.ACTIONS_API_ACCESS_TOKEN }}
+          token: ${{ fromJson( steps.azSecret.outputs.COMMON-KEYS).ACTIONS_API_ACCESS_TOKEN }}
           inputs: '{"environment": "${{github.event.inputs.environment}}" , "sha": "${{steps.tag_id.outputs.release_sha}}"  }'
           ref: "${{github.ref}}"
 
@@ -49,7 +62,7 @@ jobs:
         uses: fountainhead/action-wait-for-check@v1.0.0
         id: wait-for-deploy
         with:
-          token: ${{ secrets.ACTIONS_API_ACCESS_TOKEN}}
+          token: ${{ fromJson( steps.azSecret.outputs.COMMON-KEYS).ACTIONS_API_ACCESS_TOKEN }}
           checkName: Deploy ${{github.event.inputs.environment}}
           ref: "${{github.ref}}"
 
@@ -68,7 +81,7 @@ jobs:
           SLACK_COLOR: ${{env.SLACK_SUCCESS}}
           SLACK_TITLE: "Release Published to ${{github.event.inputs.environment}}: ${{steps.tag_id.outputs.release_name}}"
           SLACK_MESSAGE: ${{steps.tag_id.outputs.release_body}}
-          SLACK_WEBHOOK: ${{ secrets.SLACK_RELEASE_NOTE_WEBHOOK }}
+          SLACK_WEBHOOK: ${{ fromJson( steps.azSecret.outputs.COMMON-KEYS).SLACK_RELEASE_NOTE_WEBHOOK }}
           MSG_MINIMAL: true
 
       - name: Slack Notification
@@ -78,4 +91,4 @@ jobs:
           SLACK_COLOR: ${{env.SLACK_FAILURE}}
           SLACK_TITLE: "Manual Release Failed: ${{steps.tag_id.outputs.release_name}}"
           SLACK_MESSAGE: Failure deploying ${{github.event.inputs.environment}} release
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_WEBHOOK: ${{ fromJson( steps.azSecret.outputs.COMMON-KEYS).SLACK_WEBHOOK }}

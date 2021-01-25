@@ -11,12 +11,23 @@ jobs:
   turnstyle:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    environment: Development
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
       - name: set-up-environment
         uses: DFE-Digital/github-actions/set-up-environment@master
+
+      - uses: Azure/login@v1
+        with:
+            creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - uses: Azure/get-keyvault-secrets@v1
+        id:   azSecret
+        with:
+           keyvault: ${{ secrets.KEY_VAULT}}
+           secrets: 'COMMON-KEYS'
 
       - name: Check workflow concurrency
         uses: softprops/turnstyle@v1
@@ -33,17 +44,18 @@ jobs:
           SLACK_COLOR: ${{env.SLACK_ERROR}}
           SLACK_MESSAGE: Workflow concurrency issue
           SLACK_TITLE: Turnstyle failure ${{ github.workflow }}
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_WEBHOOK: ${{ fromJson( steps.azSecret.outputs.COMMON-KEYS).SLACK_WEBHOOK }}
 
   build:
     name: Build
     runs-on: ubuntu-latest
+    environment: Development
     services:
       registry:
         image: registry:2
         ports:
           - 5000:5000
-    needs: turnstyle
+    needs: [ turnstyle ]
     steps:
 
       - name: Check out the repo
@@ -51,6 +63,16 @@ jobs:
 
       - name: set-up-environment
         uses: DFE-Digital/github-actions/set-up-environment@master
+
+      - uses: Azure/login@v1
+        with:
+            creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - uses: Azure/get-keyvault-secrets@v1
+        id:   azSecret
+        with:
+           keyvault: ${{ secrets.KEY_VAULT}}
+           secrets: 'COMMON-KEYS'
 
       - name: Lint Dockerfile
         uses: brpaz/hadolint-action@master
@@ -75,8 +97,8 @@ jobs:
       - name: Login to Docker Hub
         uses: docker/login-action@v1
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PERSONAL_ACCESS_TOKEN }}
+          username: ${{ fromJson( steps.azSecret.outputs.COMMON-KEYS).DOCKER_USERNAME }}
+          password: ${{ fromJson( steps.azSecret.outputs.COMMON-KEYS).DOCKER_PASSWORD }}
 
       - name: Build master and push to Docker Hub
         if: github.ref == 'refs/heads/master'
@@ -113,7 +135,7 @@ jobs:
         uses: benc-uk/workflow-dispatch@v1.1
         with:
           workflow: cve
-          token: ${{ secrets.ACTIONS_API_ACCESS_TOKEN }}
+          token: ${{ fromJson( steps.azSecret.outputs.COMMON-KEYS).ACTIONS_API_ACCESS_TOKEN }}
           inputs: '{"image": "${{ steps.sha.outputs.image }}"}'
 
       - name: Slack Notification
@@ -123,11 +145,12 @@ jobs:
           SLACK_COLOR: ${{env.SLACK_ERROR}}
           SLACK_MESSAGE: The Development ${{env.APPLICATION}} workflow has failed carrying out job ${{github.job}}
           SLACK_TITLE: Development Workflow Failure
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_WEBHOOK: ${{ fromJson( steps.azSecret.outputs.COMMON-KEYS).SLACK_WEBHOOK }}
 
   review:
     name: Review Deployment Process
-    needs: build
+    environment: Development
+    needs: [ build ]
     if: github.ref != 'refs/heads/master' && github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     steps:
@@ -137,11 +160,21 @@ jobs:
       - name: set-up-environment
         uses: DFE-Digital/github-actions/set-up-environment@master
 
+      - uses: Azure/login@v1
+        with:
+            creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - uses: Azure/get-keyvault-secrets@v1
+        id:   azSecret
+        with:
+           keyvault: ${{ secrets.KEY_VAULT}}
+           secrets: 'COMMON-KEYS'
+
       - name: Trigger Review Deployment
         uses: benc-uk/workflow-dispatch@v1.1
         with:
           workflow: Deploy to PaaS
-          token: ${{ secrets.ACTIONS_API_ACCESS_TOKEN }}
+          token: ${{ fromJson( steps.azSecret.outputs.COMMON-KEYS).ACTIONS_API_ACCESS_TOKEN }}
           inputs: '{"environment": "Review", "sha": "${{ github.sha }}" , "pr": "${{github.event.number}}"  }'
           ref: ${{ github.event.pull_request.head.ref }}
 
@@ -149,7 +182,7 @@ jobs:
         uses: fountainhead/action-wait-for-check@v1.0.0
         id: wait-for-review
         with:
-          token: ${{ secrets.ACTIONS_API_ACCESS_TOKEN}}
+          token: ${{ fromJson( steps.azSecret.outputs.COMMON-KEYS).ACTIONS_API_ACCESS_TOKEN}}
           checkName: Deploy Review
           ref: ${{ github.event.pull_request.head.ref }}
 
@@ -170,7 +203,7 @@ jobs:
         if: contains(github.event.pull_request.user.login, 'dependabot') == false
         uses: actions-ecosystem/action-add-labels@v1
         with:
-          github_token: ${{ secrets.ACTIONS_API_ACCESS_TOKEN }}
+          github_token: ${{ fromJson( steps.azSecret.outputs.COMMON-KEYS).ACTIONS_API_ACCESS_TOKEN }}
           labels: Review
 
       - name: Slack Notification
@@ -180,11 +213,12 @@ jobs:
           SLACK_COLOR: ${{env.SLACK_ERROR}}
           SLACK_TITLE: Failure preparing for Preview
           SLACK_MESSAGE: Failure with Review preperation for ${{env.APPLICATION}}
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_WEBHOOK: ${{ fromJson( steps.azSecret.outputs.COMMON-KEYS).SLACK_WEBHOOK }}
 
   development:
     name: Development Deployment
-    needs: build
+    environment: Development
+    needs: [ build ]
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     outputs:
@@ -197,11 +231,21 @@ jobs:
       - name: set-up-environment
         uses: DFE-Digital/github-actions/set-up-environment@master
 
+      - uses: Azure/login@v1
+        with:
+            creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - uses: Azure/get-keyvault-secrets@v1
+        id:   azSecret
+        with:
+           keyvault: ${{ secrets.KEY_VAULT}}
+           secrets: 'COMMON-KEYS'
+
       - name: Trigger Development Deployment
         uses: benc-uk/workflow-dispatch@v1.1
         with:
           workflow: Deploy to PaaS
-          token: ${{ secrets.ACTIONS_API_ACCESS_TOKEN }}
+          token: ${{ fromJson( steps.azSecret.outputs.COMMON-KEYS).ACTIONS_API_ACCESS_TOKEN }}
           inputs: '{"environment": "Development", "sha": "${{ github.sha }}"}'
           ref: ${{github.ref}}
 
@@ -209,7 +253,7 @@ jobs:
         uses: fountainhead/action-wait-for-check@v1.0.0
         id: wait-for-deploy
         with:
-          token: ${{ secrets.ACTIONS_API_ACCESS_TOKEN}}
+          token: ${{ fromJson( steps.azSecret.outputs.COMMON-KEYS).ACTIONS_API_ACCESS_TOKEN}}
           checkName: Deploy Development
           ref: ${{github.ref}}
 
@@ -221,7 +265,7 @@ jobs:
         uses: benc-uk/workflow-dispatch@v1.1
         with:
           workflow: owasp
-          token: ${{ secrets.ACTIONS_API_ACCESS_TOKEN }}
+          token: ${{ fromJson( steps.azSecret.outputs.COMMON-KEYS).ACTIONS_API_ACCESS_TOKEN }}
           inputs: '{"environment": "dev"}'
 
       - name: Trigger Development Fix Network Policies
@@ -229,7 +273,7 @@ jobs:
         with:
          repo: DFE-Digital/get-into-teaching-api
          workflow: Fix Network policies 
-         token: ${{ secrets.ACTIONS_API_ACCESS_TOKEN }}
+         token: ${{ fromJson( steps.azSecret.outputs.COMMON-KEYS).ACTIONS_API_ACCESS_TOKEN }}
          inputs: '{"environment": "Development" }'
            
       - name: Generate Tag from PR Number
@@ -253,7 +297,8 @@ jobs:
 
   qa:
     name: Quality Assurance Deployment
-    needs: development
+    environment: Test
+    needs: [ development ]
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
@@ -263,11 +308,21 @@ jobs:
       - name: set-up-environment
         uses: DFE-Digital/github-actions/set-up-environment@master
 
+      - uses: Azure/login@v1
+        with:
+            creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - uses: Azure/get-keyvault-secrets@v1
+        id:   azSecret
+        with:
+           keyvault: ${{ secrets.KEY_VAULT}}
+           secrets: 'COMMON-KEYS'
+
       - name: Trigger Deployment to QA
         uses: benc-uk/workflow-dispatch@v1.1
         with:
           workflow: Deploy to PaaS
-          token: ${{ secrets.ACTIONS_API_ACCESS_TOKEN }}
+          token: ${{ fromJson( steps.azSecret.outputs.COMMON-KEYS).ACTIONS_API_ACCESS_TOKEN }}
           inputs: '{"environment": "Test", "sha": "${{ github.sha }}" }'
           ref: ${{github.ref}}
 
@@ -275,7 +330,7 @@ jobs:
         uses: fountainhead/action-wait-for-check@v1.0.0
         id: wait-for-deploy
         with:
-          token: ${{ secrets.ACTIONS_API_ACCESS_TOKEN}}
+          token: ${{ fromJson( steps.azSecret.outputs.COMMON-KEYS).ACTIONS_API_ACCESS_TOKEN}}
           checkName: Deploy Test
           ref: ${{github.ref}}
 
@@ -290,12 +345,13 @@ jobs:
           SLACK_COLOR: ${{env.SLACK_ERROR}}
           SLACK_TITLE: Failure in Post-Development Deploy
           SLACK_MESSAGE: Failure with initialising QA deployment for ${{env.APPLICATION}}
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_WEBHOOK: ${{ fromJson( steps.azSecret.outputs.COMMON-KEYS).SLACK_WEBHOOK }}
 
   cypress:
     name: Run Cypress Tests on QA
     runs-on: ubuntu-latest
-    needs: qa
+    environment: Test
+    needs: [ qa ]
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
@@ -303,12 +359,22 @@ jobs:
       - name: set-up-environment
         uses: DFE-Digital/github-actions/set-up-environment@master
 
+      - uses: Azure/login@v1
+        with:
+            creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - uses: Azure/get-keyvault-secrets@v1
+        id:   azSecret
+        with:
+           keyvault: ${{ secrets.KEY_VAULT}}
+           secrets: 'COMMON-KEYS'
+
       - name: Trigger Cypress Tests (DFE-Digital/get-into-teaching-frontend-tests )
         uses: benc-uk/workflow-dispatch@v1.1
         with:
           repo: DFE-Digital/get-into-teaching-frontend-tests
           workflow: Cypress
-          token: ${{ secrets.ACTIONS_API_ACCESS_TOKEN }}
+          token: ${{ fromJson( steps.azSecret.outputs.COMMON-KEYS).ACTIONS_API_ACCESS_TOKEN }}
           inputs: '{"application": "APP" , "reference": "${{ github.sha }}" }'
           ref: refs/heads/master
 
@@ -316,7 +382,7 @@ jobs:
         uses: fountainhead/action-wait-for-check@v1.0.0
         id: wait-for-deploy
         with:
-          token: ${{ secrets.ACTIONS_API_ACCESS_TOKEN}}
+          token: ${{ fromJson( steps.azSecret.outputs.COMMON-KEYS).ACTIONS_API_ACCESS_TOKEN}}
           checkName: ${{ github.sha }}
           ref: refs/heads/master
           repo: get-into-teaching-frontend-tests
@@ -329,6 +395,7 @@ jobs:
 
   production:
     name: Production Deployment
+    environment: Production
     runs-on: ubuntu-latest
     needs: [ cypress, development ]
     steps:
@@ -338,12 +405,22 @@ jobs:
       - name: set-up-environment
         uses: DFE-Digital/github-actions/set-up-environment@master
 
+      - uses: Azure/login@v1
+        with:
+            creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - uses: Azure/get-keyvault-secrets@v1
+        id:   azSecret
+        with:
+           keyvault: ${{ secrets.KEY_VAULT}}
+           secrets: 'COMMON-KEYS'
+
       - name: Get Release Id from Tag
         id: tag_id
         uses: DFE-Digital/github-actions/DraftReleaseByTag@master
         with:
           TAG: ${{needs.development.outputs.release_tag}}
-          TOKEN: ${{secrets.ACTIONS_API_ACCESS_TOKEN}}
+          TOKEN: ${{fromJson( steps.azSecret.outputs.COMMON-KEYS).ACTIONS_API_ACCESS_TOKEN}}
 
       - name: Publish Release
         if: steps.tag_id.outputs.release_id
@@ -357,7 +434,7 @@ jobs:
         uses: benc-uk/workflow-dispatch@v1.1
         with:
           workflow: Deploy to PaaS
-          token: ${{ secrets.ACTIONS_API_ACCESS_TOKEN }}
+          token: ${{ fromJson( steps.azSecret.outputs.COMMON-KEYS).ACTIONS_API_ACCESS_TOKEN }}
           inputs: '{"environment": "Production", "sha": "${{ github.sha }}" }'
           ref: ${{github.ref}}
 
@@ -365,7 +442,7 @@ jobs:
         uses: fountainhead/action-wait-for-check@v1.0.0
         id: wait-for-deploy
         with:
-          token: ${{ secrets.ACTIONS_API_ACCESS_TOKEN}}
+          token: ${{ fromJson( steps.azSecret.outputs.COMMON-KEYS).ACTIONS_API_ACCESS_TOKEN}}
           checkName: Deploy Production
           ref: ${{github.ref}}
 
@@ -378,7 +455,7 @@ jobs:
         with:
          repo: DFE-Digital/get-into-teaching-api
          workflow: Fix Network policies 
-         token: ${{ secrets.ACTIONS_API_ACCESS_TOKEN }}
+         token: ${{ fromJson( steps.azSecret.outputs.COMMON-KEYS).ACTIONS_API_ACCESS_TOKEN }}
          inputs: '{"environment": "Production" }'
 
       - name: Slack Release Notification
@@ -388,7 +465,7 @@ jobs:
           SLACK_COLOR: ${{env.SLACK_SUCCESS}}
           SLACK_TITLE: "Release Published: ${{steps.tag_id.outputs.release_name}}"
           SLACK_MESSAGE: ${{steps.tag_id.outputs.release_body}}
-          SLACK_WEBHOOK: ${{ secrets.SLACK_RELEASE_NOTE_WEBHOOK }}
+          SLACK_WEBHOOK: ${{ fromJson( steps.azSecret.outputs.COMMON-KEYS).SLACK_RELEASE_NOTE_WEBHOOK }}
           MSG_MINIMAL: true
 
       - name: Slack Notification
@@ -398,4 +475,4 @@ jobs:
           SLACK_COLOR: ${{env.SLACK_FAILURE}}
           SLACK_TITLE: Production Release ${{github.event.title}}
           SLACK_MESSAGE: Failure deploying Production release
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_WEBHOOK: ${{ fromJson( steps.azSecret.outputs.COMMON-KEYS).SLACK_WEBHOOK }}
