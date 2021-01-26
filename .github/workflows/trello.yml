@@ -18,7 +18,7 @@ jobs:
         id:   azSecret
         with:
            keyvault: ${{ secrets.KEY_VAULT}}
-           secrets: 'COMMON-KEYS'
+           secrets: 'TRELLO-KEY, TRELLO-TOKEN'
 
       - name: Extract Pull Request url
         id: pr-url
@@ -46,6 +46,6 @@ jobs:
             --fail \
             --request POST \
             --url 'https://api.trello.com/1/cards/${{ steps.trello-id.outputs.id }}/actions/comments' \
-            --data-urlencode "key=${{ fromJson( steps.azSecret.outputs.COMMON-KEYS).TRELLO_KEY }}" \
-            --data-urlencode "token=${{ fromJson( steps.azSecret.outputs.COMMON-KEYS).TRELLO_TOKEN }}" \
+            --data-urlencode "key=${{ steps.azSecret.outputs.TRELLO-KEY }}" \
+            --data-urlencode "token=${{ steps.azSecret.outputs.TRELLO-TOKEN }}" \
             --data-urlencode "text=${{ steps.pr-url.outputs.url }}"

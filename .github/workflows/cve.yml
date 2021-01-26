@@ -26,7 +26,7 @@ jobs:
         id:   azSecret
         with:
            keyvault: ${{ secrets.KEY_VAULT}}
-           secrets: 'COMMON-KEYS'
+           secrets: 'SLACK-WEBHOOK'
 
       - name: Scan image
         uses: anchore/scan-action@v2
@@ -47,6 +47,6 @@ jobs:
         uses: rtCamp/action-slack-notify@master
         env:
           SLACK_COLOR: ${{env.SLACK_FAILURE}}
-          SLACK_WEBHOOK: ${{ fromJson( steps.azSecret.outputs.COMMON-KEYS).SLACK_WEBHOOK }}
+          SLACK_WEBHOOK: ${{ steps.azSecret.outputs.SLACK-WEBHOOK }}
           SLACK_MESSAGE: Pipeline Failure carrying out CVE Testing on ${{ github.event.inputs.image }}
           SLACK_TITLE: CVE Testing has failed

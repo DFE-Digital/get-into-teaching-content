@@ -92,7 +92,7 @@ jobs:
         id:   azSecret
         with:
            keyvault: ${{ secrets.KEY_VAULT}}
-           secrets: 'CONTENT-KEYS'
+           secrets: 'HTTP-USERNAME, HTTP-PASSWORD'
 
       - uses: hashicorp/setup-terraform@v1.3.2
         with:
@@ -129,8 +129,8 @@ jobs:
         run: |
             tests/confidence/healthcheck.sh  "${{steps.variables.outputs.healthcheck}}"  "${{ steps.sha.outputs.short }}"
         env:
-          HTTPAUTH_PASSWORD: ${{ fromJson( steps.azSecret.outputs.CONTENT-KEYS).HTTP_PASSWORD }}
-          HTTPAUTH_USERNAME: ${{ fromJson( steps.azSecret.outputs.CONTENT-KEYS).HTTP_USERNAME }}
+          HTTPAUTH_PASSWORD: ${{ steps.azSecret.outputs.HTTP-PASSWORD }}
+          HTTPAUTH_USERNAME: ${{ steps.azSecret.outputs.HTTP-USERNAME }}
 
       - name: Update ${{ github.event.inputs.environment }} status
         if: always()

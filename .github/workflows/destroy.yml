@@ -28,7 +28,7 @@ jobs:
         id:   azSecret
         with:
            keyvault: ${{ secrets.KEY_VAULT}}
-           secrets: 'COMMON-KEYS'
+           secrets: 'SLACK-WEBHOOK'
 
       - name: Setup Environment Variables
         id: variables
@@ -62,4 +62,4 @@ jobs:
           SLACK_COLOR: ${{env.SLACK_FAILURE}}
           SLACK_TITLE: Failure Closing Review
           SLACK_MESSAGE: Failure closing ${{env.APPLICATION}} review
-          SLACK_WEBHOOK: ${{ fromJson( steps.azSecret.outputs.COMMON-KEYS).SLACK_WEBHOOK }} 
+          SLACK_WEBHOOK: ${{ steps.azSecret.outputs.SLACK-WEBHOOK }} 

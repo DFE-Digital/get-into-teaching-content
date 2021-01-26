@@ -1,16 +1,16 @@
 provider "cloudfoundry" {
   api_url  = var.api_url
-  user     = local.devops_secrets["PAAS_USERNAME"]
-  password = local.devops_secrets["PAAS_PASSWORD"]
+  user     = data.azurerm_key_vault_secret.paas_username.value
+  password = data.azurerm_key_vault_secret.paas_password.value
 }
 
 provider statuscake {
-  username = local.devops_secrets["SC_USERNAME"]
-  apikey   = local.devops_secrets["SC_PASSWORD"]
+  username = data.azurerm_key_vault_secret.statuscake_username.value
+  apikey   = data.azurerm_key_vault_secret.statuscake_password.value
 }
 
 locals {
-  azure_credentials      = jsondecode( var.AZURE_CREDENTIALS )
+  azure_credentials = jsondecode(var.AZURE_CREDENTIALS)
 }
 
 provider "azurerm" {
