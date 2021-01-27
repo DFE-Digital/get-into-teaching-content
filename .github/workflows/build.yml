@@ -237,7 +237,12 @@ jobs:
         uses: DFE-Digital/github-actions/GenerateReleaseFromSHA@master
         with:
           sha: ${{github.sha}}
-
+          
+      - name: Create Temporary Release File
+        if: steps.tag_version.outputs.pr_found == 1
+        run: 
+            echo "${{ steps.tag_version.outputs.pr_number }}" > ${PWD}/temp.md
+      
       - name: Create a GitHub Release
         if: steps.tag_version.outputs.pr_found == 1
         uses: actions/create-release@v1
@@ -245,8 +250,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.tag_version.outputs.pr_number }}
-          release_name: Release ${{ steps.tag_version.outputs.pr_number }}
-          body: ${{ steps.tag_version.outputs.pr_text }}
+          release_name: GiT Content Release ${{ steps.tag_version.outputs.pr_number }}
+          body_path: ${PWD}/temp.md
           commitish: ${{ github.sha}}
           prerelease: false
           draft: true
