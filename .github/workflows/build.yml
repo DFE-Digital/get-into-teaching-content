@@ -255,8 +255,8 @@ jobs:
         if: steps.release.outputs.id      
         uses: DFE-Digital/github-actions/CopyPRtoRelease@master
         with:
-          PR_NUMBER:  steps.tag_version.outputs.pr_number
-          RELEASE_ID: steps.release.outputs.id
+          PR_NUMBER:  ${{ steps.tag_version.outputs.pr_number }}
+          RELEASE_ID: ${{ steps.release.outputs.id }}
           TOKEN: ${{secrets.GITHUB_TOKEN}}          
 
   qa:
