@@ -245,7 +245,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: steps.tag_version.outputs.pr_number 
+          tag_name: ${{ steps.tag_version.outputs.pr_number }} 
           release_name: GiT Content Release ${{ steps.tag_version.outputs.pr_number }}
           commitish: ${{ github.sha}}
           prerelease: false
