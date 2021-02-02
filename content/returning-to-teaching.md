@@ -46,6 +46,6 @@ right_column:
    - icon: icon-calendar
      title: Are you returning from overseas?
      link_text: Come up with some suitable text here
-     link_target: /events/return-to-teaching-8
+     link_target: "/international-returners"
 ---
 
