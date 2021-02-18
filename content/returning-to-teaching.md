@@ -26,21 +26,7 @@ content:
   - content/returning-to-teaching/return-to-teaching-advisers-cta
   - content/returning-to-teaching/finding-a-role
   - content/returning-to-teaching/support-for-returners-with-protected-characteristics
-  - content/returning-to-teaching/teachers-who-trained-in-england-returning-from-overseas
-
-  # - content/returning-to-teaching/intro-cta
-  # - content/returning-to-teaching/improving-the-lives-of-teachers
-
-# The right column only supports one piece of content at the moment so
-# we can choose between jump links or a a CTA. Opting for jump links
-# for the time being as we can still place CTAs amongst content
-
-# jump_links:
-#  Finding a role: "#finding-a-role"
-#  Teachers who trained in England returning from overseas: "#teachers-who-trained-in-england-returning-from-overseas"
-#  Support for returners identifying with protected characteristics: "#support-for-returners-identifying-with-protected-characteristics"
-#  Improving the lives of teachers: "#improving-the-lives-of-teachers"
-
+  - content/returning-to-teaching/improving-the-lives-of-teachers
 right_column:
   ctas:
    - icon: icon-calendar

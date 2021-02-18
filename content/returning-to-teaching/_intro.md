@@ -1,3 +1,10 @@
+Returning to teaching might be easier than you expect, and we’re here to help
+make the transition as smooth as possible.
+
+Expert advice, support and helpful resources are available if you’re
+considering returning to teaching, or you’re qualified to teach but have never
+taught in a state school in England.
+
 If you’ve been out of teaching for a while, you may want to:
 
 * attend an [online return to teaching event](/events/return-to-teaching-8)
