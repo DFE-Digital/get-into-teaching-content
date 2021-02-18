@@ -15,6 +15,23 @@ jump_links:
   Extra support for shortage subjects: "#extra-support-for-shortage-subjects"
   Information on support, CPD and salaries: "#continuous-professional-development-cpd-and-teaching-salaries"
   A step-by-step guide on coming home to teach: "#return-to-teach-in-england-step-by-step"
+accordion:
+  numbered: true
+  steps:
+    "Download our information pack":
+      partial: content/international-returners/download-info-pack
+    Check your qualifications:
+      partial: content/international-returners/check-your-qualifications
+    Find your next role and get ready to apply:
+      partial: content/international-returners/get-ready-to-apply
+    Read up on changes to English schools:
+      partial: content/international-returners/read-up-on-changes-to-english-schools
+    Get started on your personal and professional admin:
+      partial: content/international-returners/get-started-on-your-personal-and-professional-admin
+    Research visas and immigration:
+      partial: content/international-returners/research-visas-and-immigration
+    Contact us for support and help:
+      partial: content/international-returners/contact-us-for-support-and-help
 ---
 
 Are you a UK teacher currently working abroad? Our children and young people
@@ -91,79 +108,4 @@ collaborated with schools to:
 
 Teacher mental health is an important focus for DfE. [Read our Teaching blog](https://teaching.blog.gov.uk/category/teacher-wellbeing/teacher-mental-health/) to learn more.
 
-
 ## Return to teach in England: step by step
-
-### 1. Download our information pack & register for our next webinar
-
-Our information pack contains lots more helpful advice and information about your journey home.
-
-### 2. Check your qualifications
-
-If you trained to teach in England, you will already have [qualified teacher status (QTS)](https://www.gov.uk/guidance/qualified-teacher-status-qts).
-
-If you have been working as a teacher overseas without QTS, you should be aware that in many schools funded by the UK government in England (‘state schools'), teachers must have this qualification.
-
-Even where QTS is not a legal requirement, many schools use it to assess the quality of candidates for teaching jobs.
-
-You will therefore strengthen your application for teaching jobs in England in both the state sector and [private sector](https://www.gov.uk/types-of-school/private-schools) if you have QTS.
-
-If you have experience working as a teacher, and a degree, you may be able to get QTS through the assessment only route without any further training.
-
-If you have fewer than 2 years of teaching experience, you will need to apply for a [teacher training course](https://www.find-postgraduate-teacher-training.service.gov.uk/) leading to QTS.
-
-### 3. Find your next role
-
-Register with Teaching Vacancies and set up your job alerts.
-
-### 4. Get ready to apply
-
-Strengthen your application and widen your net by:
-
-* networking with schools and colleagues in England (search
-  [#PrimaryRocks](https://twitter.com/search?q=%23PrimaryRocks),
-  [#MFLTwitterati](https://twitter.com/search?q=%23MFLTwitterati) and
-  [#UKEdChat](https://twitter.com/search?q=%23UKEdChat) on Twitter)
-* collecting evidence of your performance and experience overseas (this can include lessons recorded on video, testimonials from your headteacher)
-* getting a police clearance certificate and/or a letter of good conduct
-* writing your supporting statement
-* arranging your references
-* reading up on [teaching interview tips](https://www.teachertoolkit.co.uk/2019/04/04/job-interviews)
-* checking our [pointers for remote interviewing](https://www.tes.com/news/coronavirus-10-tips-acing-remote-job-interview)
-
-
-### 5. Read up on changes to English schools
-
-Browse the latest guidance:
-
-* [Types of school](https://www.gov.uk/types-of-school)
-* [Teachers' standards](https://www.gov.uk/government/publications/teachers-standards)
-* [Curriculum and qualifications](https://www.gov.uk/schools-colleges-childrens-services/curriculum-qualifications)
-* [Behaviour and discipline in schools](https://www.gov.uk/government/publications/behaviour-and-discipline-in-schools)
-* [Changes to the Ofsted framework](https://www.gov.uk/government/news/whats-changing-at-ofsted-in-autumn-2019), with a focus on reducing workload
-* The [Education Endowment Foundation](https://educationendowmentfoundation.org.uk/evidence-summaries/teaching-learning-toolkit/) (for a summary of the international evidence on teaching 5-16 year-olds)
-
-### 6. Get started on your personal and professional admin
-
-You may wish to:
-
-* join the [Chartered College of Teaching](https://chartered.college/), the professional body for teachers
-* join a [teaching union](https://www.tes.com/jobs/careers-advice/pay-and-conditions/which-teachers-union)
-* ensure your [pension is up to date](https://www.teacherspensions.co.uk/members/working-life/life-events/moving-abroad.aspx)
-* check the [FCDO's travel advice](https://www.gov.uk/foreign-travel-advice)
-
-### 7. Research visas and immigration
-
-Learn what the UK's new [points-based immigration system](https://www.gov.uk/uk-family-visa) means for teachers returning with spouses and other family members.
-
-8. Contact us for help and support
-
-Register for our next webinar
-
-[Placeholder: next international returner event]
-
-* Join us on social media
-* Join us on [Facebook](https://www.facebook.com/getintoteaching), [Instagram](https://www.instagram.com/get_into_teaching/) and [Twitter](https://twitter.com/getintoteaching)
-* Download our information pack
-
-Email us at international.teacherrecruitment@education.gov.uk
