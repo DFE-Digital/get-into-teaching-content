@@ -6,7 +6,7 @@ right_column:
   ctas:
     - title: Some call to action
       text: |
-        Text to be finalised
+        Sign up to attend our next online event
       link_text: "Click me"
       link_target: "#"
       icon: "icon-calendar"

@@ -31,7 +31,7 @@ right_column:
   ctas:
    - icon: icon-calendar
      title: Are you returning from overseas?
-     link_text: Sign up to attend our next online event
+     link_text: Come up with some suitable text 
      link_target: "/international-returners"
 ---
 
