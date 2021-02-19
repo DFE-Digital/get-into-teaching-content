@@ -1,5 +1,6 @@
 ---
 title: Returning to teaching from overseas
+image: /assets/images/international-returners-dt.png
 backlink: "../../"
 right_column:
   ctas:
@@ -98,9 +99,7 @@ grateful for the hard work and sacrifice of everyone in the profession.
 
 [Read our COVID-19 guidance for school and teachers](https://www.gov.uk/government/collections/guidance-for-schools-coronavirus-covid-19).
 
-Before the COVID-19 pandemic hit, DfE was working hard to improve life for
-teachers in England by reducing teaching stress and workload. We've
-collaborated with schools to:
+Before the COVID-19 pandemic hit, DfE was working hard to improve life for teachers in England by reducing teaching stress and workload. We’ve collaborated with schools to:
 
 * [develop a workload reduction kit](https://www.gov.uk/guidance/school-workload-reduction-toolkit)
 * [invest £10m in Behaviour hubs](https://www.gov.uk/guidance/behaviour-hubs) so schools with exemplary pupil behaviour can help other schools improve

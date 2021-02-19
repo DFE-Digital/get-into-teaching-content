@@ -9,6 +9,6 @@ Strengthen your application and widen your net by:
 * writing your supporting statement
 * arranging your references
 * reading up on [teaching interview tips](https://www.teachertoolkit.co.uk/2019/04/04/job-interviews)
-* checking our [pointers for remote interviewing](https://www.tes.com/news/coronavirus-10-tips-acing-remote-job-interview)
+* checking [pointers for remote interviewing](https://www.tes.com/news/coronavirus-10-tips-acing-remote-job-interview)
 
 Register with Teaching Vacancies and set up your job alerts.
