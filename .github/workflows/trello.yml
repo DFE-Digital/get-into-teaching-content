@@ -1,4 +1,3 @@
-
 name: Link Trello card
 
 on:
@@ -27,4 +26,4 @@ jobs:
           MESSAGE:      ${{ github.event.pull_request.html_url }} 
           CARD:         ${{ github.event.pull_request.body }}           
           TRELLO-KEY:   ${{ steps.azSecret.outputs.TRELLO-KEY}}
-          TRELLO-TOKEN: ${{ steps.azSecret.outputs.TRELLO-TOKEN }
+          TRELLO-TOKEN: ${{ steps.azSecret.outputs.TRELLO-TOKEN }}
