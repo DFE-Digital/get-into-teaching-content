@@ -1,13 +1,13 @@
 # These settings are for the sandbox and should mainly be overriden by TF_VARS 
 # or set with environment variables TF_VAR_xxxx
 
-variable api_url {
+variable "api_url" {
   default = "https://api.london.cloud.service.gov.uk"
 }
 
-variable AZURE_CREDENTIALS {}
-variable azure_key_vault {}
-variable azure_resource_group {}
+variable "AZURE_CREDENTIALS" {}
+variable "azure_key_vault" {}
+variable "azure_resource_group" {}
 
 variable "application_stopped" {
   default = false
@@ -29,7 +29,7 @@ variable "logging" {
   default = 1
 }
 
-variable "paas_additional_route_names" {
+variable "paas_internet_hostnames" {
   default = []
 }
 
@@ -56,6 +56,6 @@ variable "strategy" {
 }
 
 variable "alerts" {
-  type = map
+  type = map(any)
 }
 
