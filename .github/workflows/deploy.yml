@@ -158,9 +158,11 @@ jobs:
           TF_VAR_AZURE_CREDENTIALS:     ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Smoke tests
-        if: ${{steps.variables.outputs.RUN_TEST}} == "true"
         run: |
-            tests/confidence/healthcheck.sh  "${{steps.variables.outputs.healthcheck}}"  "${{ steps.sha.outputs.short }}"
+            if [ "${{steps.variables.outputs.RUN_TEST}}" == "true" ]
+            then
+                   tests/confidence/healthcheck.sh  "${{steps.variables.outputs.healthcheck}}"  "${{ steps.sha.outputs.short }}"
+            fi
         env:
           HTTPAUTH_PASSWORD: ${{ steps.azSecret.outputs.HTTP-PASSWORD }}
           HTTPAUTH_USERNAME: ${{ steps.azSecret.outputs.HTTP-USERNAME }}
