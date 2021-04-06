@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: The environment to deploy to Development/Test/Production/Review/Speed etc
+        description: The environment to deploy to Development/Test/Production/Review/Speed/UR etc
         required: true
       sha:
         description: Commit sha to be deployed
@@ -105,6 +105,15 @@ jobs:
                  echo ::set-output name=control::$(echo "pagespeed" )
                  echo ::set-output name=healthcheck::$(echo "${{env.PAAS_APPLICATION_NAME}}-pagespeed" )
                  echo ::set-output name=key::"app.pagespeed.terraform"
+                 echo ::set-output name=docker_image::${{env.DOCKERHUB_REPOSITORY}}:sha-${{ steps.sha.outputs.short}}
+             fi
+
+             if [ "${{github.event.inputs.environment }}" == "UR" ]
+             then
+                 echo ::set-output name=RUN_TEST::"true"
+                 echo ::set-output name=control::$(echo "UR" )
+                 echo ::set-output name=healthcheck::$(echo "${{env.PAAS_APPLICATION_NAME}}-UR" )
+                 echo ::set-output name=key::"app.ur.terraform"
                  echo ::set-output name=docker_image::${{env.DOCKERHUB_REPOSITORY}}:sha-${{ steps.sha.outputs.short}}
              fi
 
