@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: Development/Test/Production
+        description: Development/Test/Production/Speed
         required: true
       tag:
         description: Release Tag
