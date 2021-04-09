@@ -334,6 +334,14 @@ jobs:
           checkName: Deploy Test
           ref: ${{github.ref}}
 
+      - name: Trigger Test Fix Network Policies
+        uses: benc-uk/workflow-dispatch@v1.1
+        with:
+         repo: DFE-Digital/get-into-teaching-api
+         workflow: Fix Network policies 
+         token: ${{ steps.azSecret.outputs.ACTIONS-API-ACCESS-TOKEN }}
+         inputs: '{"environment": "Test" }'
+         
       - name: Check if QA Deployment has returned with a failure
         if: steps.wait-for-deploy.outputs.conclusion == 'failure'
         run: exit 1
